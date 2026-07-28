@@ -17,15 +17,22 @@ rmdir /S /Q DiscoCartUtil-Upload
 mkdir DiscoCartUtil-Setup
 if %ERRORLEVEL% NEQ 0 goto :fail
 
-if exist "..\..\..\..\certs\codesignpasswd.txt" ( 
-    set /p codesignpasswd=<"..\..\..\..\certs\codesignpasswd.txt"
-)
+set "GOOGLE_APPLICATION_CREDENTIALS=C:\ProgramData\Google\CloudKMS\retrospy-code-signer.json"
 
 cd "bin\Release\net8.0\"
 if %ERRORLEVEL% NEQ 0 goto :fail
 
 if exist "..\..\..\..\..\..\..\certs\codesign.cer" (
-"C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x86\SignTool" sign /f "..\..\..\..\..\..\..\certs\codesign.cer" /csp "eToken Base Cryptographic Provider" /k "%codesignpasswd%" /tr http://timestamp.comodoca.com  /td sha256 /fd sha256 /a DiscoCartUtil.exe
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\SignTool.exe" sign ^
+  /v ^
+  /debug ^
+  /fd sha256 ^
+  /td sha256 ^
+  /tr "http://timestamp.sectigo.com" ^
+  /f "..\..\..\..\..\..\certs\user.crt" ^
+  /csp "Google Cloud KMS Provider" ^
+  /kc "projects/retrospy-code-signing/locations/us-west2/keyRings/code-signing/cryptoKeys/retrospy-code-signing/cryptoKeyVersions/1" ^
+  "DiscoCartUtil.exe"
 if %ERRORLEVEL% NEQ 0 goto :fail
 )
 
@@ -50,8 +57,18 @@ if %ERRORLEVEL% NEQ 0 goto :fail
 if exist "C:\Program Files (x86)\Actual Installer\actinst.exe" (
 "C:\Program Files (x86)\Actual Installer\actinst.exe" /S ".\DiscoCartUtil-64.aip"
 if %ERRORLEVEL% NEQ 0 goto :fail
-  if exist "..\..\..\..\certs\codesign.cer" (
-    "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x86\SignTool" sign /f "..\..\..\..\certs\codesign.cer" /csp "eToken Base Cryptographic Provider" /k "%codesignpasswd%" /tr http://timestamp.comodoca.com  /td sha256 /fd sha256 /a DiscoCartUtil-Setup.exe
+  if exist "..\..\..\..\certs\user.crt" (
+     "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\SignTool.exe" sign ^
+      /v ^
+      /debug ^
+      /fd sha256 ^
+      /td sha256 ^
+      /tr "http://timestamp.sectigo.com" ^
+      /f "..\..\..\..\..\..\certs\user.crt" ^
+      /csp "Google Cloud KMS Provider" ^
+      /kc "projects/retrospy-code-signing/locations/us-west2/keyRings/code-signing/cryptoKeys/retrospy-code-signing/cryptoKeyVersions/1" ^
+      "DiscoCartUtil-Setup.exe"
+
     if %ERRORLEVEL% NEQ 0 goto :fail
   )
 )

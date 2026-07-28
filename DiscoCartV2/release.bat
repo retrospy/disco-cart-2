@@ -22,7 +22,7 @@ set "GOOGLE_APPLICATION_CREDENTIALS=C:\ProgramData\Google\CloudKMS\retrospy-code
 cd "bin\Release\net8.0\"
 if %ERRORLEVEL% NEQ 0 goto :fail
 
-if exist "..\..\..\..\..\..\..\certs\codesign.cer" (
+if exist "..\..\..\..\..\..\..\certs\user.crt" (
 "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\SignTool.exe" sign ^
   /v ^
   /debug ^

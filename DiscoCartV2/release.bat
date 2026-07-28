@@ -64,7 +64,7 @@ if %ERRORLEVEL% NEQ 0 goto :fail
       /fd sha256 ^
       /td sha256 ^
       /tr "http://timestamp.sectigo.com" ^
-      /f "..\..\..\..\..\..\certs\user.crt" ^
+      /f "..\..\..\..\certs\user.crt" ^
       /csp "Google Cloud KMS Provider" ^
       /kc "projects/retrospy-code-signing/locations/us-west2/keyRings/code-signing/cryptoKeys/retrospy-code-signing/cryptoKeyVersions/1" ^
       "DiscoCartUtil-Setup.exe"
